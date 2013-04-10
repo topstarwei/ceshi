@@ -2,21 +2,22 @@
 session_start();
 include('./config/config.php');
 include('./common/db.php');
-include('./common/pinyin.class.php');
+include('./common/topinyin.class.php');
 
 
 
 
-$uid = $_GET['inf'];
+$uid = $getuid;
 $sqlinf = "select * from `user` where uid=".$uid;
 $queryinf = mysql_query($sqlinf);
 $resultinf = mysql_fetch_array($queryinf);
+
 
 $sqlCheck = "select count(id) as count from `ssl_auth` where uid=".$uid; 
 $queryCheck = mysql_query($sqlCheck);
 $resultCheck = mysql_fetch_array($queryCheck);
 //转换为拼音格式
-$resultinf['common'] = Pinyin($resultinf['common'],1);
+//$resultinf['common'] = Pinyin($resultinf['common'],1);
 
 if(!$resultCheck['count']){
 	$filename = $resultinf['common'].time().".pfx";
@@ -33,6 +34,7 @@ if(!$resultCheck['count']){
 		 "emailAddress" => $resultinf['email']
 		 );
 	 
+
 	$configargs = array('config' => dirname($_SERVER['SCRIPT_FILENAME']).'/ssl/openssl.cnf'); 
 	$privkey = openssl_pkey_new($configargs);//根据配置生产私钥
 	$csr = openssl_csr_new($dn, $privkey);//根据$dn和私钥产生有公钥的请求证书
@@ -43,6 +45,7 @@ if(!$resultCheck['count']){
 
 
 	$scrt = openssl_csr_sign($csr, $cacert, $caprivkey,$lifetime,$configargs);//用CA和CA的KEY来给请求证书进行签名
+
 	openssl_pkcs12_export_to_file($scrt, $sslFilePath, $privkey,$pwd);
 		//最后产生私钥和公钥证书在一起的格式文件 ，用于浏览器导入（服务器端的server.crt就没有必要用这步）
 		//$content = file_get_contents($sslFilePath);
