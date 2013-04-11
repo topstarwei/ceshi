@@ -17,7 +17,7 @@ $sqlCheck = "select count(id) as count from `ssl_auth` where uid=".$uid;
 $queryCheck = mysql_query($sqlCheck);
 $resultCheck = mysql_fetch_array($queryCheck);
 //转换为拼音格式
-//$resultinf['common'] = Pinyin($resultinf['common'],1);
+$resultinf['common'] = Pinyin($resultinf['common'],1);
 
 if(!$resultCheck['count']){
 	$filename = $resultinf['common'].time().".pfx";

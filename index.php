@@ -5,7 +5,7 @@ include('./common/db.php');
 
 
 
-$sql = "select * from `user` where uid=".$_GET['inf'];
+$sql = "select * from `user` where uid=".$getuid;
 $query = mysql_query($sql);
 $result = mysql_fetch_array($query);
 $_SESSION['common'] = $result['common'];
